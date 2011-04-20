@@ -1,0 +1,4 @@
+glob:trunk/SkypeHistory.Shell.5.1.ReSharper.user
+relre:obj/*
+[Bb]in/*
+relre:relre:*.suo
