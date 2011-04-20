@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using Microsoft.Practices.Unity;
+using SkypeHistory.Entities;
 using SkypeHistory.Entities.Reports;
 using SkypeHistory.Infrastructure;
 using SkypeHistory.Infrastructure.Generators;
@@ -58,6 +59,7 @@ namespace SkypeHistory.Modules.MonthReport
             CommonWriter.WriteTitle(context, "Report by month message count");
 
             GenerateHeader(context, minDate, maxDate);
+
             Dictionary<string, string> normalNames =
                 result.Select(pair => new Tuple<string, string>(GetMember(pair.Key).DisplayName, pair.Key)).OrderBy(
                     i => i.Item1).ToDictionary(i => i.Item1, i => i.Item2);
