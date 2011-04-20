@@ -32,17 +32,19 @@ namespace SkypeHistory.Infrastructure.Generators
 
         protected Entities.Member GetMember(string skypeName)
         {
-			// we hardcode value for system skype account
-			if (skypeName == "sys")
+            var memberKey = "Member" + skypeName;
+            var member = CacheService.Get(memberKey, () => ChatRepository.GetMember(skypeName));
+			if (member == null)
+			{
 				return new Member()
 				       	{
-				       		DisplayName = "sys",
-				       		FullName = "sys",
-				       		Name = "sys",
+				       		DisplayName = skypeName,
+				       		FullName = skypeName,
+				       		Name = skypeName,
 				       		Id = -1
 				       	};
-            var memberKey = "Member" + skypeName;
-            return CacheService.Get(memberKey, () => ChatRepository.GetMember(skypeName));
+			}
+        	return member;
         }
 
     }
