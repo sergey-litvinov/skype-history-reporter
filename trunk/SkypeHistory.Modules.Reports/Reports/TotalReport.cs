@@ -30,6 +30,7 @@ namespace SkypeHistory.Modules.MonthReport
 	        foreach (var item in groups)
 	        {
 	            var member = GetMember(item.Item1);
+				if (member == null) continue;
 	            TableWriter.WriteBody(context, member.DisplayName, item.Item2.ToString());
 	        }
             TableWriter.WriteFooter(context);

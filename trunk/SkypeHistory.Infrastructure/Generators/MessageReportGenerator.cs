@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Practices.Unity;
+using SkypeHistory.Entities;
 using SkypeHistory.Entities.Reports;
 using SkypeHistory.Interfaces;
 using SkypeHistory.Interfaces.Generators;
@@ -31,6 +32,15 @@ namespace SkypeHistory.Infrastructure.Generators
 
         protected Entities.Member GetMember(string skypeName)
         {
+			// we hardcode value for system skype account
+			if (skypeName == "sys")
+				return new Member()
+				       	{
+				       		DisplayName = "sys",
+				       		FullName = "sys",
+				       		Name = "sys",
+				       		Id = -1
+				       	};
             var memberKey = "Member" + skypeName;
             return CacheService.Get(memberKey, () => ChatRepository.GetMember(skypeName));
         }
