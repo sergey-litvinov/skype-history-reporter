@@ -8,9 +8,4 @@ namespace SkypeHistory.Interfaces.Generators
         void WriteBody(ReportContext context, params string[] data);
         void WriteFooter(ReportContext context, params string[] data);
     }
-
-    public interface ICommonWriter : IWriter
-    {
-        void WriteTitle(ReportContext context, string header);
-    }
 }

@@ -7,32 +7,16 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+using SkypeHistory.Interfaces;
+
 namespace SkypeHistory.Shell.Views
 {
-    public partial class GenerationForm : Form
+	public partial class GenerationForm : Form
     {
         public GenerationForm()
         {
             InitializeComponent();
             Icon = Properties.Resources.Address_Book;
-        }
-
-        public string State
-        {
-            get { return lbState.Text; }
-            set { lbState.Text = value; }
-        }
-
-        public int Value
-        {
-            get { return pbProgess.Value; }
-            set { pbProgess.Value = value; }
-        }
-
-        public int Count
-        {
-            get { return pbProgess.Maximum; }
-            set { pbProgess.Maximum = value; }
         }
 
         private void GenerationForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -42,5 +26,27 @@ namespace SkypeHistory.Shell.Views
                 e.Cancel = true;
             }
         }
+
+		public void Setup(int count)
+		{
+			pbProgess.Value = 0;
+			pbProgess.Maximum = count;
+		}
+
+		public bool NextStep(string state)
+		{
+			if (pbProgess.Value >= pbProgess.Maximum)
+			{
+				return false;
+			}
+
+			pbProgess.Value++;
+			if (!string.IsNullOrEmpty(state))
+			{
+				lbState.Text = state;
+			}
+
+			return true;
+		}
     }
 }

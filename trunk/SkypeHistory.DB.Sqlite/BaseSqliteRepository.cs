@@ -5,9 +5,9 @@ using System.Data.Common;
 using Microsoft.Practices.Unity;
 using SkypeHistory.Interfaces;
 
-namespace SkypeHistory.DB.SqlLite
+namespace SkypeHistory.DB.Sqlite
 {
-    internal class BaseSqlLiteRepository
+    internal class BaseSqliteRepository
     {
     	private static readonly DbProviderFactory factory = System.Data.SQLite.SQLiteFactory.Instance;
 			//DbProviderFactories.GetFactory("System.Data.SQLite");

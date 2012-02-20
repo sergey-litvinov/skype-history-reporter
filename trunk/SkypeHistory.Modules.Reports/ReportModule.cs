@@ -9,12 +9,14 @@ namespace SkypeHistory.Modules.MonthReport
 	{
 		public override void Run()
 		{
-            Container.RegisterType<IReportGenerator, TotalReport>("Total");
-		    Container.RegisterType<IReportGenerator, MonthReport>("Month");
-            Container.RegisterType<IReportGenerator, DailyReport>("Daily");
-		    Container.RegisterType<IReportGenerator, HourlyReport>("Hourly");
-		    Container.RegisterType<IReportGenerator, DayOfWeekReport>("DayOfWeek");
-            Container.RegisterType<IReportGenerator, TopWordsReport>("TopWords");
-        }
+			Container.RegisterType<IChatReportGenerator, TotalReport>("Total");
+			Container.RegisterType<IChatReportGenerator, MonthReport>("Month");
+			Container.RegisterType<IChatReportGenerator, DailyReport>("Daily");
+			Container.RegisterType<IChatReportGenerator, HourlyReport>("Hourly");
+			Container.RegisterType<IChatReportGenerator, DayOfWeekReport>("DayOfWeek");
+			Container.RegisterType<IChatReportGenerator, TopWordsReport>("TopWords");
+
+			Container.RegisterType<ITimerangeReport, TimerangeReport>("Timerange");
+		}
 	}
 }

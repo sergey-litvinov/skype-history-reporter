@@ -1,6 +1,5 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
+
 using Microsoft.Practices.Unity;
 using SkypeHistory.Entities;
 using SkypeHistory.Entities.Reports;
@@ -24,13 +23,13 @@ namespace SkypeHistory.Infrastructure.Generators
 
         public abstract void Generate(ReportContext context);
 
-        protected IEnumerable<Entities.Message> GetMessages()
+        protected IEnumerable<Message> GetMessages()
         {
             string key = "GetMessages" + ProfileHolder.SelectedChat.Name;
             return CacheService.Get(key, () => ChatRepository.GetMessages(ProfileHolder.SelectedChat));            
         }
 
-        protected Entities.Member GetMember(string skypeName)
+        protected Member GetMember(string skypeName)
         {
             var memberKey = "Member" + skypeName;
             var member = CacheService.Get(memberKey, () => ChatRepository.GetMember(skypeName));

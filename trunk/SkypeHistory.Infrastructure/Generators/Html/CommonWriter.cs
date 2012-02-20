@@ -6,9 +6,22 @@ namespace SkypeHistory.Infrastructure.Generators.Html
 {
     public class CommonWriter : BaseHtmlWriter, ICommonWriter
     {
-        public void WriteTitle(ReportContext context, string header)
+		public string NewLine
+		{
+			get
+			{
+				return "<br/>";
+			}
+		}
+
+		public void WriteTitle(ReportContext context, string header)
         {
-            GetWriter(context).WriteLine("<h2>{0}</h2>", header);
+			context.Writer.WriteLine("<h2>{0}</h2>", header);
         }
+
+    	public void WriteDelimiter(ReportContext context)
+    	{
+			context.Writer.WriteLine("<hr align='left' width='100%'/>");
+    	}
     }
 }
