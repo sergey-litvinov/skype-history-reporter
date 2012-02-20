@@ -56,7 +56,7 @@ namespace SkypeHistory.Shell
 
 			var modulesList = new DirectoryInfo(dir).
 				GetFiles("*.dll").
-				Select(file => Assembly.LoadFile(file.FullName)).
+				Select(SafeLoadModule).
 				Where(a => a.FullName.StartsWith("SkypeHistory")).
 				Select(a =>
 					a.GetExportedTypes().
@@ -72,6 +72,18 @@ namespace SkypeHistory.Shell
 				{
 					module.Run();					
 				}
+			}
+		}
+
+		private Assembly SafeLoadModule(FileInfo file)
+		{
+			try
+			{
+				return Assembly.LoadFile(file.FullName);
+			}
+			catch(BadImageFormatException ex)
+			{
+				throw new InvalidOperationException("Failed to load assembly " + file.FullName, ex);
 			}
 		}
 	}

@@ -48,8 +48,10 @@ namespace SkypeHistory.Shell.Views
 				currentGenerationContext.EndGeneration();
 			}
 
+        	var fileName = currentGenerationContext.ReportFileName;
+        	currentGenerationContext = null;
 			generationForm.Hide();
-			Process.Start(currentGenerationContext.ReportFileName);
+			Process.Start(fileName);
         }
 
 		private void ReportWorkerDoWork(object sender, DoWorkEventArgs e)
