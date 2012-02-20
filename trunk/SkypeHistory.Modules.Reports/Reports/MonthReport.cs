@@ -6,11 +6,12 @@ using SkypeHistory.Entities;
 using SkypeHistory.Entities.Reports;
 using SkypeHistory.Infrastructure;
 using SkypeHistory.Infrastructure.Generators;
+using SkypeHistory.Infrastructure.Net4Utils;
 using SkypeHistory.Interfaces.Generators;
 
 namespace SkypeHistory.Modules.MonthReport
 {
-    public class MonthReport : MessageReportGenerator
+	public class MonthReport : MessageReportGenerator, IChatReportGenerator
     {
         [Dependency]
         public ITableWriter TableWriter { get; set; }

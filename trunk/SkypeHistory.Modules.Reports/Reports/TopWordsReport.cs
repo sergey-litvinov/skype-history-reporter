@@ -9,7 +9,7 @@ using SkypeHistory.Interfaces.Generators;
 
 namespace SkypeHistory.Modules.MonthReport
 {
-    public class TopWordsReport : MessageReportGenerator
+	public class TopWordsReport : MessageReportGenerator, IChatReportGenerator
     {
         [Dependency]
         public ITableWriter TableWriter { get; set; }
@@ -29,7 +29,7 @@ namespace SkypeHistory.Modules.MonthReport
             var smileRegex = new Regex("<[^>]*>", RegexOptions.Compiled | RegexOptions.CultureInvariant);
             foreach (var message in messages)
             {
-                if (string.IsNullOrWhiteSpace(message.Text))
+                if (string.IsNullOrEmpty(message.Text))
                     continue;
                 var text = message.Text;
                 text = smileRegex.Replace(text, string.Empty);

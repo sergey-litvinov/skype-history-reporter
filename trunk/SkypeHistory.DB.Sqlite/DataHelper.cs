@@ -2,7 +2,7 @@ using System;
 using System.Data;
 using System.Data.SqlTypes;
 
-namespace SkypeHistory.DB.SqlLite
+namespace SkypeHistory.DB.Sqlite
 {
     public static class DataReaderExtensions
     {

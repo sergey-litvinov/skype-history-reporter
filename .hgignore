@@ -2,3 +2,5 @@ glob:trunk/SkypeHistory.Shell.5.1.ReSharper.user
 relre:obj/*
 [Bb]in/*
 relre:relre:*.suo
+syntax: glob
+trunk/SkypeHistory.Infrastructure/SkypeHistory.Infrastructure.csproj.user

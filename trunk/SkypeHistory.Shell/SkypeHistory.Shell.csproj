@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SkypeHistory.Shell</RootNamespace>
     <AssemblyName>SkypeHistory.Shell</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bootstrapper.cs" />
+    <Compile Include="UIUtils.cs" />
     <Compile Include="Views\GenerationForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -84,11 +85,24 @@
     <Compile Include="Views\ProfileSelector.Designer.cs">
       <DependentUpon>ProfileSelector.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\Reports\ChatReportUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\Reports\ChatReportUserControl.Designer.cs">
+      <DependentUpon>ChatReportUserControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Reports\TimeRangeReportUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\Reports\TimeRangeReportUserControl.Designer.cs">
+      <DependentUpon>TimeRangeReportUserControl.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Views\GenerationForm.resx">
       <DependentUpon>GenerationForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -103,6 +117,12 @@
     <EmbeddedResource Include="Views\ProfileSelector.resx">
       <DependentUpon>ProfileSelector.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Views\Reports\ChatReportUserControl.resx">
+      <DependentUpon>ChatReportUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\Reports\TimeRangeReportUserControl.resx">
+      <DependentUpon>TimeRangeReportUserControl.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -115,9 +135,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SkypeHistory.DB.SqlLite\SkypeHistory.DB.SqlLite.csproj">
+    <ProjectReference Include="..\SkypeHistory.DB.Sqlite\SkypeHistory.DB.Sqlite.csproj">
       <Project>{F924F165-2DEA-41B2-8B5D-DD103A4E1A7C}</Project>
-      <Name>SkypeHistory.DB.SqlLite</Name>
+      <Name>SkypeHistory.DB.Sqlite</Name>
     </ProjectReference>
     <ProjectReference Include="..\SkypeHistory.Entities\SkypeHistory.Entities.csproj">
       <Project>{55380617-6173-4646-B45B-CDA3A5AD4BD6}</Project>
@@ -137,7 +157,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Report\Report.htm" />
+    <EmbeddedResource Include="Template\Report.htm" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\Address-Book.ico" />

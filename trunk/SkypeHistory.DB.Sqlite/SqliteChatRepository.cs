@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using SkypeHistory.Entities;
 using SkypeHistory.Infrastructure;
@@ -7,37 +8,13 @@ using SkypeHistory.Interfaces;
 using Chat = SkypeHistory.Entities.Chat;
 using Message = SkypeHistory.Entities.Message;
 
-namespace SkypeHistory.DB.SqlLite
+namespace SkypeHistory.DB.Sqlite
 {
-	internal class SqlLiteChatRepository : BaseSqlLiteRepository, IChatRepository
+	internal class SqliteChatRepository : BaseSqliteRepository, IChatRepository
 	{
 		public IEnumerable<Chat> GetAll()
 		{
-		    var chats = ExecuteReaderItems<Chat>("SELECT * FROM Chats",
-		                                         (reader, chat) =>
-		                                             {
-		                                                 chat.Name = reader.GetObject<string>("name") ?? "";
-		                                                 chat.Id = reader.GetValueObject<long>("id");
-		                                                 chat.Topic =
-		                                                     reader.GetObject<string>("topic") ?? "";
-		                                                 chat.FriendlyName =
-                                                             reader.GetObject<string>("friendlyname") ?? "";
-		                                                 chat.Posters =
-                                                             reader.GetObject<string>("posters") ?? "";
-		                                                 chat.Participants =
-                                                             reader.GetObject<string>("participants") ?? "";
-		                                                 chat.Adder = reader.GetObject<string>("adder");
-		                                                 chat.Picture = reader.GetObject<byte[]>("picture");
-		                                                 chat.ActiveMembers =
-		                                                     reader.GetObject<string>(
-                                                                 "activemembers") ?? "";
-		                                                 var timestamp =
-		                                                     reader.GetValueObject<long>(
-		                                                         "last_change");
-		                                                 chat.LastChange = DateUtils.ConvertFromLinuxStamp(timestamp);
-		                                             });
-
-		    return chats;
+		    return ExecuteReaderItems<Chat>("SELECT * FROM Chats", Fill);
 		}
 
         public IEnumerable<Member> GetCurrentChatMembers(Chat chat)
@@ -71,20 +48,12 @@ namespace SkypeHistory.DB.SqlLite
         public IEnumerable<Message> GetMessages(Chat chat)
         {
             var query = string.Format("SELECT * FROM Messages WHERE chatname = '{0}'", chat.Name);
-            return ExecuteReaderItems<Message>(query,
-                                               (reader, message) =>
-                                                   {
-                                                       message.Text = reader.GetObject<string>("body_xml");
-                                                       message.Author = reader.GetObject<string>("author");
-                                                       var stamp = reader.GetValueObject<long>("timestamp");
-
-                                                       message.Timestamp = DateUtils.ConvertFromLinuxStamp(stamp);
-                                                   });
+        	return ExecuteReaderItems<Message>(query, Fill);
         }
 
-	    private IEnumerable<Member> LoadMembers(IEnumerable<string> participants)
+		private IEnumerable<Member> LoadMembers(IEnumerable<string> participants)
         {
-            var plainMembers = String.Join(",", participants.Select(s => string.Format("'{0}'", s)));
+            var plainMembers = String.Join(",", participants.Select(s => string.Format("'{0}'", s)).ToArray());
             var query = string.Format("SELECT * FROM Contacts WHERE skypename in ({0})", plainMembers);
             var result = ExecuteReaderItems<Member>(query,
                                               (reader, member) =>
@@ -94,7 +63,7 @@ namespace SkypeHistory.DB.SqlLite
                                                       member.FullName = reader.GetObject<string>("fullname");
                                                       member.DisplayName = reader.GetObject<string>("displayname");
                                                   });
-            if (result.Count() == 0)
+            if (!result.Any())
             {
                 // try to load from Accounts table if requested member is account owner
                 query = string.Format("SELECT * FROM Accounts WHERE skypename in ({0})", plainMembers);
@@ -109,5 +78,62 @@ namespace SkypeHistory.DB.SqlLite
             }
 	        return result;
         }
+
+		public IEnumerable<Chat> GetChats(DateTime @from, DateTime to)
+		{
+			var query = string.Format("SELECT * FROM Chats WHERE timestamp >= {0} AND timestamp <= {1}", DateUtils.ConvertToLinuxStamp(from), DateUtils.ConvertToLinuxStamp(to));
+			var chats = ExecuteReaderItems<Chat>(query,
+											   this.Fill).ToList();
+			return chats;
+		}
+
+		public IEnumerable<Message> GetMessages(DateTime from, DateTime to)
+		{
+			var query = string.Format("SELECT * FROM Messages WHERE timestamp >= {0} AND timestamp <= {1}", DateUtils.ConvertToLinuxStamp(from), DateUtils.ConvertToLinuxStamp(to));
+			return ExecuteReaderItems<Message>(query, Fill);
+		}
+
+		public Chat GetChat(string chatname)
+		{
+			var chats = ExecuteReaderItems<Chat>("SELECT * FROM Chats WHERE name = @name",			
+											   this.Fill,
+											   new[] { CreateParameter("@name", chatname) }).ToList();
+			return chats.FirstOrDefault();
+		}
+
+		private void Fill(DbDataReader reader, Chat chat)
+		{
+			chat.Name = reader.GetObject<string>("name") ?? "";
+			chat.Id = reader.GetValueObject<long>("id");
+			chat.Topic =
+				reader.GetObject<string>("topic") ?? "";
+			chat.FriendlyName =
+				reader.GetObject<string>("friendlyname") ?? "";
+			chat.Posters =
+				reader.GetObject<string>("posters") ?? "";
+			chat.Participants =
+				reader.GetObject<string>("participants") ?? "";
+			chat.Adder = reader.GetObject<string>("adder");
+			chat.Picture = reader.GetObject<byte[]>("picture");
+			chat.ActiveMembers =
+				reader.GetObject<string>(
+					"activemembers") ?? "";
+			var timestamp =
+				reader.GetValueObject<long>(
+					"last_change");
+			chat.LastChange = DateUtils.ConvertFromLinuxStamp(timestamp);
+		}
+
+		private void Fill(DbDataReader reader, Message message)
+		{
+			message.ConversationId = reader.GetValueObject<long>("convo_id");
+			message.ChatName = reader.GetObject<string>("chatname");
+			message.Text = reader.GetObject<string>("body_xml");
+			message.Author = reader.GetObject<string>("author");
+			var stamp = reader.GetValueObject<long>("timestamp");
+
+			message.Timestamp = DateUtils.ConvertFromLinuxStamp(stamp);
+		}
+
 	}
 }
